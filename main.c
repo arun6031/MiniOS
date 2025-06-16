@@ -3,20 +3,18 @@
  */
 #include "myos.h"
 #include <ti/devices/msp/m0p/mspm0l130x.h>
-#include <stdint.h> // Include for uint32_t
+#include "stdint.h"
 
 uint32_t volatile vtick_count = 0;
 void delay(uint32_t t);
 uint32_t mut(void);
 
-#define STACK_SIZE 128 // A bit more stack for safety (adjust as needed)
+#define STACK_SIZE 128
 uint32_t stack1[STACK_SIZE];
 uint32_t stack2[STACK_SIZE];
 
 void SystickConfig()
 {
-    // SysTick interrupt priority should be higher than PendSV
-    // 0U is the highest priority (lowest numerical value)
     NVIC_SetPriority(SysTick_IRQn, 0U);
     SysTick->LOAD = 32000 - 1; // Assuming 32MHz clock for 1ms tick (32000 cycles)
     SysTick->VAL = 0x0;        // Clear current value
@@ -37,12 +35,8 @@ void GPIOConfig()
 OSThread LED1;
 void LED1_task() {
     while (1) {
-        GPIOA->DOUT31_0 |= (1U << 27);  // Turn on LED1 (PA27)
-
-
-        // No delay here, as the scheduler will preempt
+        GPIOA->DOUT31_0 |= (1U << 27);
         delay(500);
-         // Turn off LED1 (PA27)
         GPIOA->DOUT31_0 &= ~(1U << 27);
         delay(500);
     }
@@ -54,9 +48,7 @@ void LED2_task() {
 
         GPIOA->DOUT31_0 |= (1U << 26);
         delay(100);
-        // No delay here, as the scheduler will preempt
-        GPIOA->DOUT31_0 &= ~(1U << 26); // Turn off LED2 (PA26)
-
+        GPIOA->DOUT31_0 &= ~(1U << 26);
         delay(100);
     }
 }
@@ -65,11 +57,8 @@ void LED2_task() {
 int main(void)
 {
 
-
     GPIOConfig();
 
-
-    // Initialize both threads with their own stacks
     OSThread_start(&LED1, &LED1_task, stack1, sizeof(stack1));
     OSThread_start(&LED2, &LED2_task, stack2, sizeof(stack2));
 
@@ -85,27 +74,17 @@ void OS_StartUp(){
 void SysTick_Handler()
 {
     vtick_count++;
-    // Interrupts are automatically disabled on entry to ISR by hardware
-    // You re-enable them later in PendSV. Disabling them here is redundant
-    // and might cause issues if not carefully managed.
-    // The PendSV handler itself needs to manage interrupt state.
-    // For a typical RTOS, SysTick merely pends PendSV.
 
-    // If SysTick triggers, and then you call OS_sched, OS_sched will
-    // pend the PendSV. The PendSV, having lower priority, will run
-    // after SysTick_Handler completes.
-   // SCB->ICSR |= (1U << 28); // Pend PendSV here directly
 
-    // __disable_irq(); // Removed - interrupts are already disabled by hardware on ISR entry
-     OS_sched(); // This function calls the PendSV pend bit.
-    // __enable_irq(); // Removed - re-enabled by PendSV_Handler at the end
+     OS_sched();
+
 }
 
 uint32_t mut()
 {
-    __asm("cpsid i"); // Disable interrupts
+    __asm("cpsid i");
     uint32_t tick_count = vtick_count;
-    __asm("cpsie i"); // Enable interrupts
+    __asm("cpsie i");
     return tick_count;
 }
 
