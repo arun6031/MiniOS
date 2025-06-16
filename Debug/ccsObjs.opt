@@ -1,0 +1,5 @@
+"./main.o"
+"./myos.o"
+"./startup_mspm0l130x_ticlang.o"
+"../mspm0l1306.cmd"
+-l"C:/ti/mspm0_sdk_2_04_00_06/source/ti/driverlib/lib/ticlang/m0p/mspm0l11xx_l13xx/driverlib.a"
