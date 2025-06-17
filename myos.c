@@ -2,25 +2,32 @@
 #include "stddef.h"
 #include <stdint.h> // Include for uint32_t
 #define MAX_THREAD 32
+#define IDLE_STACK_SIZE 64
  OSThread * volatile OS_curr; /* pointer to the current thread */
  OSThread * volatile OS_next; /* pointer to the next thread to run */
- OSThread* OSThreads[32+1];
- uint32_t num_of_threads;
+ OSThread* OS_thread[32+1];
+ uint32_t OS_threadNum;
  uint32_t current_id;
+ uint32_t idle_stack[IDLE_STACK_SIZE];
+ uint32_t OS_readySet;
+ OSThread idle;
+
+ void idle_thread(){
+     while(1){
+
+        __asm volatile("WFI"); //Waiting for interrupt
+     }
+ }
 
 void OS_init(void) {
-    /* set the PendSV interrupt priority to the lowest level 0xFF */
-    // For MSPM0L130x, priority registers are typically 8-bit, but shifted for register alignment.
-    // 0xFF means the lowest possible priority.
 
-    OS_curr = (OSThread *)0; // Set to NULL initially so the first PendSV goes to PendSV_restore
 
-    *(uint32_t volatile *)0xE000ED20 |= (0xFFU << 16); // SHPR3 register, bits[23:16] for PendSV
+   *(uint32_t volatile *)0xE000ED20 |= (0xFFU << 16); // SHPR3 register, bits[23:16] for PendSV
+    OSThread_start(&idle,&idle_thread,idle_stack,sizeof(idle_stack));
 }
 
 
 void OS_start(void){
-    OS_StartUp();
     __disable_irq();
     OS_sched();
     __enable_irq();
@@ -28,17 +35,21 @@ void OS_start(void){
 
 
 void OS_sched(void) {
-    /* OS_next = ... */
-   ++current_id;
-   if(current_id==num_of_threads){
-       current_id=0U;
-   }
-   OS_next=OSThreads[current_id];
-
-    if (OS_next != OS_curr) {
-        // Trigger PendSV exception
-        *(uint32_t volatile *)0xE000ED04 = (1U << 28); // ICSR register, bit 28 (PENDSVSET)
+    if (OS_readySet == 0U)
+    {
+        current_id = 0U;
     }
+      else {
+            do {
+                ++current_id;
+                if (current_id == OS_threadNum)
+                {
+                   current_id = 1U;
+                }
+            } while ((OS_readySet & (1U << (current_id - 1U))) == 0U);
+        }
+        OS_next = OS_thread[current_id];
+        if (OS_next != OS_curr) { *(uint32_t volatile *)0xE000ED04 = (1U << 28); }
 }
 
 void OSThread_start(
@@ -80,12 +91,41 @@ void OSThread_start(
         *sp = 0xDEADBEEFU;
 
     }
-       if(num_of_threads<MAX_THREAD){
-        OSThreads[num_of_threads]=th;
-        ++num_of_threads;
+    if (OS_threadNum >= (MAX_THREAD + 1))
+    {
+        return;
+    }
+      th->timeout = 0U;
+      th->block_mask = 0U;
+      OS_thread[OS_threadNum] = th;
+
+       if (OS_threadNum > 0U)
+       {
+           OS_readySet |= (1U << (OS_threadNum - 1U));
        }
+          ++OS_threadNum;
 
+}
+void OS_tick(void) {
+    uint8_t i;
+    for (i = 1U; i < OS_threadNum; ++i) {
+        OSThread *p = OS_thread[i];
+        if (p->timeout != 0U) {
+            --p->timeout;
+            if (p->timeout == 0U && p->block_mask == 0U) {
+                OS_readySet |= (1U << (i - 1U));
+            }
+        }
+    }
+}
 
+void OS_delay(uint32_t ticks)
+{
+    __asm volatile ("cpsid i");
+    OS_curr->timeout = ticks;
+    OS_readySet &= ~(1U << (current_id - 1U));
+    OS_sched();
+    __asm volatile ("cpsie i");
 }
 
 

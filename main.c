@@ -36,9 +36,9 @@ OSThread LED1;
 void LED1_task() {
     while (1) {
         GPIOA->DOUT31_0 |= (1U << 27);
-        delay(500);
+        OS_delay(500);
         GPIOA->DOUT31_0 &= ~(1U << 27);
-        delay(500);
+        OS_delay(500);
     }
 }
 
@@ -47,9 +47,9 @@ void LED2_task() {
     while (1) {
 
         GPIOA->DOUT31_0 |= (1U << 26);
-        delay(100);
+        OS_delay(100);
         GPIOA->DOUT31_0 &= ~(1U << 26);
-        delay(100);
+        OS_delay(100);
     }
 }
 
@@ -58,7 +58,8 @@ int main(void)
 {
 
     GPIOConfig();
-
+    OS_init();
+    SystickConfig();
     OSThread_start(&LED1, &LED1_task, stack1, sizeof(stack1));
     OSThread_start(&LED2, &LED2_task, stack2, sizeof(stack2));
 
@@ -66,30 +67,16 @@ int main(void)
 
     return 0;
 }
-void OS_StartUp(){
-    OS_init();
-    SystickConfig();
-}
+
 
 void SysTick_Handler()
 {
-    vtick_count++;
-
-
-     OS_sched();
+    __asm volatile ("cpsid i");
+       OS_tick();
+       __asm volatile ("cpsie i");
+       OS_sched();
 
 }
 
-uint32_t mut()
-{
-    __asm("cpsid i");
-    uint32_t tick_count = vtick_count;
-    __asm("cpsie i");
-    return tick_count;
-}
 
-void delay(uint32_t ticks)
-{
-    uint32_t start = mut();
-    while ((mut() - start) < ticks);
-}
+
