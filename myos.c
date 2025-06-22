@@ -96,7 +96,6 @@ void OSThread_start(
         return;
     }
       th->timeout = 0U;
-      th->block_mask = 0U;
       OS_thread[OS_threadNum] = th;
 
        if (OS_threadNum > 0U)
@@ -112,7 +111,7 @@ void OS_tick(void) {
         OSThread *p = OS_thread[i];
         if (p->timeout != 0U) {
             --p->timeout;
-            if (p->timeout == 0U && p->block_mask == 0U) {
+            if (p->timeout == 0U ) {
                 OS_readySet |= (1U << (i - 1U));
             }
         }
@@ -142,7 +141,7 @@ __asm volatile (
     "  BEQ             PendSV_restore     \n"
 
     /* push registers r4-r11 on the stack */
-#if (__ARM_ARCH == 6)             // if ARMv6-M... (Cortex-M0/M0+)
+
     "  SUB             sp,sp,#(8*4)      \n"
     "  MOV             r0,sp             \n"
     "  STMIA           r0!,{r4-r7}       \n"
@@ -151,9 +150,7 @@ __asm volatile (
     "  MOV             r6,r10            \n"
     "  MOV             r7,r11            \n"
     "  STMIA           r0!,{r4-r7}       \n" // save the high registers
-#else                               // ARMv7-M or higher
-    "  PUSH            {r4-r11}          \n"
-#endif                               // ARMv7-M or higher
+
 
     /* OS_curr->sp = sp; */
     "  LDR             r1,=OS_curr        \n"
@@ -176,7 +173,6 @@ __asm volatile (
     "  STR             r1,[r2,#0x00]      \n"
 
     /* pop registers r4-r11 */
-#if (__ARM_ARCH == 6)             // if ARMv6-M...
     "  MOV             r0,sp              \n" // r0 := top of stack
     "  MOV             r2,r0              \n"
     "  ADDS            r2,r2,#(4*4)      \n" // point r2 to the 4 high registers r7-r11 (assuming r4-r7 were pushed first by STMIA)
@@ -187,9 +183,6 @@ __asm volatile (
     "  MOV             r11,r7             \n"
     "  LDMIA           r0!,{r4-r7}       \n" // pop the low registers
     "  ADD             sp,sp,#(8*4)      \n" // remove 8 registers from the stack
-#else                               // ARMv7-M or higher
-    "  POP             {r4-r11}          \n"
-#endif                               // ARMv7-M or higher
 
     "  CPSIE           I                  \n"
 

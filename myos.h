@@ -7,7 +7,7 @@
 typedef struct {
     void *sp;
     uint32_t timeout;
-    uint32_t block_mask;
+
 } OSThread;
 
 typedef void (*Handler)();

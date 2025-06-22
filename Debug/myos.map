@@ -1,18 +1,18 @@
 ******************************************************************************
             TI ARM Clang Linker PC v3.2.2                      
 ******************************************************************************
->> Linked Wed Jun 18 01:32:30 2025
+>> Linked Sun Jun 22 13:34:57 2025
 
 OUTPUT FILE NAME:   <myos.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 000005bd
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 000005b5
 
 
 MEMORY CONFIGURATION
 
          name            origin    length      used     unused   attr    fill
 ----------------------  --------  ---------  --------  --------  ----  --------
-  FLASH                 00000000   0000fff8  00000648  0000f9b0  R  X
-  SRAM                  20000000   00001000  000006bc  00000944  RW X
+  FLASH                 00000000   0000fff8  00000640  0000f9b8  R  X
+  SRAM                  20000000   00001000  000006b0  00000950  RW X
   BCR_CONFIG            41c00000   00000080  00000000  00000080  R   
   BSL_CONFIG            41c00100   00000080  00000000  00000080  R   
 
@@ -21,12 +21,12 @@ SEGMENT ALLOCATION MAP
 
 run origin  load origin   length   init length attrs members
 ----------  ----------- ---------- ----------- ----- -------
-00000000    00000000    00000648   00000648    r-x
+00000000    00000000    00000640   00000640    r-x
   00000000    00000000    000000c0   000000c0    r-- .intvecs
-  000000c0    000000c0    00000570   00000570    r-x .text
-  00000630    00000630    00000018   00000018    r-- .cinit
-20000000    20000000    000005bc   00000000    rw-
-  20000000    20000000    000005bc   00000000    rw- .bss
+  000000c0    000000c0    00000568   00000568    r-x .text
+  00000628    00000628    00000018   00000018    r-- .cinit
+20000000    20000000    000005b0   00000000    rw-
+  20000000    20000000    000005b0   00000000    rw- .bss
 20000f00    20000f00    00000100   00000000    rw-
   20000f00    20000f00    00000100   00000000    rw- .stack
 
@@ -39,7 +39,7 @@ section   page    origin      length       input sections
 .intvecs   0    00000000    000000c0     
                   00000000    000000c0     startup_mspm0l130x_ticlang.o (.intvecs)
 
-.text      0    000000c0    00000570     
+.text      0    000000c0    00000568     
                   000000c0    00000108     myos.o (.text.OS_init)
                   000001c8    000000e0     myos.o (.text.OSThread_start)
                   000002a8    00000094     main.o (.text.main)
@@ -47,45 +47,45 @@ section   page    origin      length       input sections
                   000003b8    0000006c     myos.o (.text.OS_start)
                   00000424    00000068     myos.o (.text.OS_sched)
                   0000048c    00000054     myos.o (.text.PendSV_Handler)
-                  000004e0    00000050     myos.o (.text.OS_tick)
-                  00000530    0000003c     libc.a : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit)
-                  0000056c    00000028     main.o (.text.LED1_task)
-                  00000594    00000028     main.o (.text.LED2_task)
-                  000005bc    00000028     libc.a : boot_cortex_m.c.obj (.text:_c_int00_noargs)
-                  000005e4    00000010     main.o (.text.SysTick_Handler)
-                  000005f4    00000010     libc.a : copy_zero_init.c.obj (.text:decompress:ZI)
-                  00000604    0000000e            : memset16.S.obj (.text:TI_memset_small)
-                  00000612    00000002     startup_mspm0l130x_ticlang.o (.text.Default_Handler)
-                  00000614    0000000c     libclang_rt.builtins.a : aeabi_memset.S.obj (.text.__aeabi_memclr)
-                  00000620    00000004     startup_mspm0l130x_ticlang.o (.text.Reset_Handler)
-                  00000624    00000004     libc.a : pre_init.c.obj (.text._system_pre_init)
-                  00000628    00000004     myos.o (.text.idle_thread)
-                  0000062c    00000004     libc.a : exit.c.obj (.text:abort)
+                  000004e0    00000048     myos.o (.text.OS_tick)
+                  00000528    0000003c     libc.a : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit)
+                  00000564    00000028     main.o (.text.LED1_task)
+                  0000058c    00000028     main.o (.text.LED2_task)
+                  000005b4    00000028     libc.a : boot_cortex_m.c.obj (.text:_c_int00_noargs)
+                  000005dc    00000010     main.o (.text.SysTick_Handler)
+                  000005ec    00000010     libc.a : copy_zero_init.c.obj (.text:decompress:ZI)
+                  000005fc    0000000e            : memset16.S.obj (.text:TI_memset_small)
+                  0000060a    00000002     startup_mspm0l130x_ticlang.o (.text.Default_Handler)
+                  0000060c    0000000c     libclang_rt.builtins.a : aeabi_memset.S.obj (.text.__aeabi_memclr)
+                  00000618    00000004     startup_mspm0l130x_ticlang.o (.text.Reset_Handler)
+                  0000061c    00000004     libc.a : pre_init.c.obj (.text._system_pre_init)
+                  00000620    00000004     myos.o (.text.idle_thread)
+                  00000624    00000004     libc.a : exit.c.obj (.text:abort)
 
-.cinit     0    00000630    00000018     
-                  00000630    00000008     (.cinit..bss.load) [load image, compression = zero_init]
-                  00000638    00000004     (__TI_handler_table)
-                  0000063c    00000008     (__TI_cinit_table)
-                  00000644    00000004     --HOLE-- [fill = 0]
+.cinit     0    00000628    00000018     
+                  00000628    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  00000630    00000004     (__TI_handler_table)
+                  00000634    00000008     (__TI_cinit_table)
+                  0000063c    00000004     --HOLE-- [fill = 0]
 
 .init_array 
 *          0    00000000    00000000     UNINITIALIZED
 
 .binit     0    00000000    00000000     
 
-.bss       0    20000000    000005bc     UNINITIALIZED
+.bss       0    20000000    000005b0     UNINITIALIZED
                   20000000    00000200     (.common:stack1)
                   20000200    00000200     (.common:stack2)
                   20000400    00000100     (.common:idle_stack)
                   20000500    00000084     (.common:OS_thread)
-                  20000584    0000000c     (.common:LED1)
-                  20000590    0000000c     (.common:LED2)
-                  2000059c    0000000c     (.common:idle)
-                  200005a8    00000004     (.common:OS_curr)
-                  200005ac    00000004     (.common:OS_next)
-                  200005b0    00000004     (.common:OS_readySet)
-                  200005b4    00000004     (.common:OS_threadNum)
-                  200005b8    00000004     (.common:current_id)
+                  20000584    00000008     (.common:LED1)
+                  2000058c    00000008     (.common:LED2)
+                  20000594    00000008     (.common:idle)
+                  2000059c    00000004     (.common:OS_curr)
+                  200005a0    00000004     (.common:OS_next)
+                  200005a4    00000004     (.common:OS_readySet)
+                  200005a8    00000004     (.common:OS_threadNum)
+                  200005ac    00000004     (.common:current_id)
 
 .stack     0    20000f00    00000100     UNINITIALIZED
                   20000f00    00000004     libc.a : boot_cortex_m.c.obj (.stack)
@@ -102,11 +102,11 @@ MODULE SUMMARY
        Module                         code   ro data   rw data
        ------                         ----   -------   -------
     .\
-       myos.o                         992    0         420    
-       main.o                         244    0         1048   
+       myos.o                         984    0         416    
+       main.o                         244    0         1040   
        startup_mspm0l130x_ticlang.o   6      192       0      
     +--+------------------------------+------+---------+---------+
-       Total:                         1242   192       1468   
+       Total:                         1234   192       1456   
                                                               
     F:\ti\ccs\tools\compiler\ti-cgt-armllvm_3.2.2.LTS\lib\armv6m-ti-none-eabi/c/libc.a
        autoinit.c.obj                 60     0         0      
@@ -126,18 +126,18 @@ MODULE SUMMARY
        Stack:                         0      0         256    
        Linker Generated:              0      20        0      
     +--+------------------------------+------+---------+---------+
-       Grand Total:                   1392   212       1724   
+       Grand Total:                   1384   212       1712   
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000063c records: 1, size/record: 8, table size: 8
-	.bss: load addr=00000630, load size=00000008 bytes, run addr=20000000, run size=000005bc bytes, compression=zero_init
+__TI_cinit_table @ 00000634 records: 1, size/record: 8, table size: 8
+	.bss: load addr=00000628, load size=00000008 bytes, run addr=20000000, run size=000005b0 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 00000638 records: 1, size/record: 4, table size: 4
+__TI_handler_table @ 00000630 records: 1, size/record: 4, table size: 4
 	index: 0, handler: __TI_zero_init
 
 
@@ -145,43 +145,43 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 
 address   name                          
 -------   ----                          
-00000613  ADC0_IRQHandler               
-0000062c  C$$EXIT                       
-00000613  DMA_IRQHandler                
-00000613  Default_Handler               
-00000613  GROUP0_IRQHandler             
-00000613  GROUP1_IRQHandler             
-00000613  HardFault_Handler             
-00000613  I2C0_IRQHandler               
-00000613  I2C1_IRQHandler               
+0000060b  ADC0_IRQHandler               
+00000624  C$$EXIT                       
+0000060b  DMA_IRQHandler                
+0000060b  Default_Handler               
+0000060b  GROUP0_IRQHandler             
+0000060b  GROUP1_IRQHandler             
+0000060b  HardFault_Handler             
+0000060b  I2C0_IRQHandler               
+0000060b  I2C1_IRQHandler               
 20000584  LED1                          
-0000056d  LED1_task                     
-20000590  LED2                          
-00000595  LED2_task                     
-00000613  NMI_Handler                   
+00000565  LED1_task                     
+2000058c  LED2                          
+0000058d  LED2_task                     
+0000060b  NMI_Handler                   
 000001c9  OSThread_start                
-200005a8  OS_curr                       
+2000059c  OS_curr                       
 0000033d  OS_delay                      
 000000c1  OS_init                       
-200005ac  OS_next                       
-200005b0  OS_readySet                   
+200005a0  OS_next                       
+200005a4  OS_readySet                   
 00000425  OS_sched                      
 000003b9  OS_start                      
 20000500  OS_thread                     
-200005b4  OS_threadNum                  
+200005a8  OS_threadNum                  
 000004e1  OS_tick                       
 0000048d  PendSV_Handler                
-00000621  Reset_Handler                 
-00000613  SPI0_IRQHandler               
-00000613  SVC_Handler                   
-000005e5  SysTick_Handler               
-00000613  TIMG0_IRQHandler              
-00000613  TIMG1_IRQHandler              
-00000613  TIMG2_IRQHandler              
-00000613  TIMG4_IRQHandler              
-00000605  TI_memset_small               
-00000613  UART0_IRQHandler              
-00000613  UART1_IRQHandler              
+00000619  Reset_Handler                 
+0000060b  SPI0_IRQHandler               
+0000060b  SVC_Handler                   
+000005dd  SysTick_Handler               
+0000060b  TIMG0_IRQHandler              
+0000060b  TIMG1_IRQHandler              
+0000060b  TIMG2_IRQHandler              
+0000060b  TIMG4_IRQHandler              
+000005fd  TI_memset_small               
+0000060b  UART0_IRQHandler              
+0000060b  UART1_IRQHandler              
 20001000  __STACK_END                   
 00000100  __STACK_SIZE                  
 00000000  __TI_ATRegion0_region_sz      
@@ -193,20 +193,20 @@ address   name
 00000000  __TI_ATRegion2_region_sz      
 00000000  __TI_ATRegion2_src_addr       
 00000000  __TI_ATRegion2_trg_addr       
-0000063c  __TI_CINIT_Base               
-00000644  __TI_CINIT_Limit              
-00000644  __TI_CINIT_Warm               
-00000638  __TI_Handler_Table_Base       
-0000063c  __TI_Handler_Table_Limit      
-00000531  __TI_auto_init_nobinit_nopinit
+00000634  __TI_CINIT_Base               
+0000063c  __TI_CINIT_Limit              
+0000063c  __TI_CINIT_Warm               
+00000630  __TI_Handler_Table_Base       
+00000634  __TI_Handler_Table_Limit      
+00000529  __TI_auto_init_nobinit_nopinit
 ffffffff  __TI_pprof_out_hndl           
 ffffffff  __TI_prof_data_size           
 ffffffff  __TI_prof_data_start          
 00000000  __TI_static_base__            
-000005f5  __TI_zero_init                
-00000615  __aeabi_memclr                
-00000615  __aeabi_memclr4               
-00000615  __aeabi_memclr8               
+000005ed  __TI_zero_init                
+0000060d  __aeabi_memclr                
+0000060d  __aeabi_memclr4               
+0000060d  __aeabi_memclr8               
 ffffffff  __binit__                     
 UNDEFED   __mpu_init                    
 20000f00  __stack                       
@@ -214,15 +214,15 @@ UNDEFED   __mpu_init
 20000000  __start___llvm_prf_cnts       
 20000000  __stop___llvm_prf_bits        
 20000000  __stop___llvm_prf_cnts        
-000005bd  _c_int00_noargs               
+000005b5  _c_int00_noargs               
 UNDEFED   _system_post_cinit            
-00000625  _system_pre_init              
-0000062d  abort                         
+0000061d  _system_pre_init              
+00000625  abort                         
 ffffffff  binit                         
-200005b8  current_id                    
-2000059c  idle                          
+200005ac  current_id                    
+20000594  idle                          
 20000400  idle_stack                    
-00000629  idle_thread                   
+00000621  idle_thread                   
 00000000  interruptVectors              
 000002a9  main                          
 20000000  stack1                        
@@ -253,43 +253,43 @@ address   name
 00000425  OS_sched                      
 0000048d  PendSV_Handler                
 000004e1  OS_tick                       
-00000531  __TI_auto_init_nobinit_nopinit
-0000056d  LED1_task                     
-00000595  LED2_task                     
-000005bd  _c_int00_noargs               
-000005e5  SysTick_Handler               
-000005f5  __TI_zero_init                
-00000605  TI_memset_small               
-00000613  ADC0_IRQHandler               
-00000613  DMA_IRQHandler                
-00000613  Default_Handler               
-00000613  GROUP0_IRQHandler             
-00000613  GROUP1_IRQHandler             
-00000613  HardFault_Handler             
-00000613  I2C0_IRQHandler               
-00000613  I2C1_IRQHandler               
-00000613  NMI_Handler                   
-00000613  SPI0_IRQHandler               
-00000613  SVC_Handler                   
-00000613  TIMG0_IRQHandler              
-00000613  TIMG1_IRQHandler              
-00000613  TIMG2_IRQHandler              
-00000613  TIMG4_IRQHandler              
-00000613  UART0_IRQHandler              
-00000613  UART1_IRQHandler              
-00000615  __aeabi_memclr                
-00000615  __aeabi_memclr4               
-00000615  __aeabi_memclr8               
-00000621  Reset_Handler                 
-00000625  _system_pre_init              
-00000629  idle_thread                   
-0000062c  C$$EXIT                       
-0000062d  abort                         
-00000638  __TI_Handler_Table_Base       
-0000063c  __TI_CINIT_Base               
-0000063c  __TI_Handler_Table_Limit      
-00000644  __TI_CINIT_Limit              
-00000644  __TI_CINIT_Warm               
+00000529  __TI_auto_init_nobinit_nopinit
+00000565  LED1_task                     
+0000058d  LED2_task                     
+000005b5  _c_int00_noargs               
+000005dd  SysTick_Handler               
+000005ed  __TI_zero_init                
+000005fd  TI_memset_small               
+0000060b  ADC0_IRQHandler               
+0000060b  DMA_IRQHandler                
+0000060b  Default_Handler               
+0000060b  GROUP0_IRQHandler             
+0000060b  GROUP1_IRQHandler             
+0000060b  HardFault_Handler             
+0000060b  I2C0_IRQHandler               
+0000060b  I2C1_IRQHandler               
+0000060b  NMI_Handler                   
+0000060b  SPI0_IRQHandler               
+0000060b  SVC_Handler                   
+0000060b  TIMG0_IRQHandler              
+0000060b  TIMG1_IRQHandler              
+0000060b  TIMG2_IRQHandler              
+0000060b  TIMG4_IRQHandler              
+0000060b  UART0_IRQHandler              
+0000060b  UART1_IRQHandler              
+0000060d  __aeabi_memclr                
+0000060d  __aeabi_memclr4               
+0000060d  __aeabi_memclr8               
+00000619  Reset_Handler                 
+0000061d  _system_pre_init              
+00000621  idle_thread                   
+00000624  C$$EXIT                       
+00000625  abort                         
+00000630  __TI_Handler_Table_Base       
+00000634  __TI_CINIT_Base               
+00000634  __TI_Handler_Table_Limit      
+0000063c  __TI_CINIT_Limit              
+0000063c  __TI_CINIT_Warm               
 20000000  __start___llvm_prf_bits       
 20000000  __start___llvm_prf_cnts       
 20000000  __stop___llvm_prf_bits        
@@ -299,13 +299,13 @@ address   name
 20000400  idle_stack                    
 20000500  OS_thread                     
 20000584  LED1                          
-20000590  LED2                          
-2000059c  idle                          
-200005a8  OS_curr                       
-200005ac  OS_next                       
-200005b0  OS_readySet                   
-200005b4  OS_threadNum                  
-200005b8  current_id                    
+2000058c  LED2                          
+20000594  idle                          
+2000059c  OS_curr                       
+200005a0  OS_next                       
+200005a4  OS_readySet                   
+200005a8  OS_threadNum                  
+200005ac  current_id                    
 20000f00  __stack                       
 20001000  __STACK_END                   
 ffffffff  __TI_pprof_out_hndl           
